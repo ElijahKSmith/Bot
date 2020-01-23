@@ -7,10 +7,12 @@ Parse JSON
 
 with open('config.json') as cfg:
     settings = json.load(cfg)
-print(settings)
+
 """
 Start Bot
 """
 
-#client = discord.Client()
-#client.run()
+client = discord.Client()
+
+
+client.run(settings['bot-token'])
