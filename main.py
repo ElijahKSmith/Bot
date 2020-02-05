@@ -2,6 +2,11 @@ import discord
 import logging
 import json
 
+from pathlib import Path
+from datetime import datetime
+from discord.ext import commands
+
+# TODO: Change debug to be a launch option instead of program variable
 debug = True
 
 """
@@ -13,8 +18,10 @@ with open('config.json') as cfg:
 
 """
 Set up logging
-Currently does not preserve old logs, TODO: Set up log preservation
 """
+
+Path('logs').mkdir(parents=True, exist_ok=True)
+logfile = 'logs/' + datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '.log'
 
 logger = logging.getLogger('discord')
 
@@ -23,7 +30,7 @@ if debug == True:
 else:
     logger.setLevel(logging.INFO)
 
-loghandler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+loghandler = logging.FileHandler(filename=logfile, encoding='utf-8', mode='w')
 loghandler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(loghandler)
 
@@ -31,13 +38,17 @@ logger.addHandler(loghandler)
 Start Bot
 """
 
-client = discord.Client()
+bot = commands.Bot(command_prefix=settings['prefix'])
+
+@bot.command()
+async def test(ctx, arg):
+    await ctx.send(arg)
 
 #If the debug flag is enabled log messages to console to ensure the bot is connected properly
-@client.event
+@bot.event
 async def on_message(message):
     if debug == True:
-        print(message.content)
+        print(f"{message.channel}: {message.author}: {message.author.name}: {message.content}")
+    await bot.process_commands(message)
 
-
-client.run(settings['bot-token'])
+bot.run(settings['bot-token'])

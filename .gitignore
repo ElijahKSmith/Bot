@@ -1,4 +1,5 @@
 config.json
-discord.log
+*.log
 /.vscode
 /bot-env
+/logs
