@@ -40,8 +40,18 @@ Start Bot
 
 bot = commands.Bot(command_prefix=settings['prefix'])
 
+@bot.event
+async def on_ready():
+    print("Ready to set the world on fire? hehehe... -Brand")
+
+#A test command to make sure that the bot is hooking into the Discord API properly
 @bot.command()
-async def test(ctx, arg):
+async def ping(ctx):
+    await ctx.send(f'Pong! ({bot.latency})')
+
+#A test command to make sure the bot is handling arguments properly in the current context
+@bot.command()
+async def echo(ctx, arg):
     await ctx.send(arg)
 
 #If the debug flag is enabled log messages to console to ensure the bot is connected properly
