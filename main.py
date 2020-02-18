@@ -40,6 +40,7 @@ Start Bot
 
 bot = commands.Bot(command_prefix=settings['prefix'])
 
+#TODO: Put champ quotes in a file and random pull
 @bot.event
 async def on_ready():
     print("Ready to set the world on fire? hehehe... -Brand")
@@ -47,7 +48,7 @@ async def on_ready():
 #A test command to make sure that the bot is hooking into the Discord API properly
 @bot.command()
 async def ping(ctx):
-    await ctx.send(f'Pong! ({bot.latency})')
+    await ctx.send(f':ping_pong: Pong! `{round(bot.latency*1000, 2)} ms`')
 
 #A test command to make sure the bot is handling arguments properly in the current context
 @bot.command()
@@ -58,7 +59,7 @@ async def echo(ctx, arg):
 @bot.event
 async def on_message(message):
     if debug == True:
-        print(f"{message.channel}: {message.author}: {message.author.name}: {message.content}")
+        print(f"{message.channel} - {message.author}/{message.author.name}: {message.content}")
     await bot.process_commands(message)
 
 bot.run(settings['bot-token'])
