@@ -101,6 +101,8 @@ async def echo(ctx, *, args):
 #Lookup basic summoner info
 @bot.command()
 async def summoner(ctx, *, args):
+    #TODO: Sanitize user input
+    #TODO: Add case where invalid summoner name is passed
     parsedsummoner = requests.utils.quote(args)
 
     query = host + 'summoner/v4/summoners/by-name/' + parsedsummoner
