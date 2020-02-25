@@ -41,6 +41,7 @@ host = switch_platform(settings['region'])
 if host == '-1':
     print("ERROR: Region in config is invald, must be one of the folowing: {'br', 'eun', 'euw', 'jp', 'kr', 'lan', 'las', 'na', 'oce', 'tr', 'ru'}")
     exit(1)
+host = 'https://' + host + '.api.riotgames.com/lol/'
 
 #Check current DDragon files against live Riot ones to see if there's an update
 rg_ver = requests.get("https://ddragon.leagueoflegends.com/api/versions.json").json()[0]
@@ -99,9 +100,24 @@ async def echo(ctx, *, args):
 
 #Lookup basic summoner info
 @bot.command()
-async def summoner(ctx):
-    await ctx.send("Not yet implemented")
+async def summoner(ctx, *, args):
+    parsedsummoner = requests.utils.quote(args)
 
+    query = host + 'summoner/v4/summoners/by-name/' + parsedsummoner
+    payload = {'api_key': rgkey}
+    response = requests.get(query, params=payload)
+    summoner = response.json()
+
+    embedURL = 'https://' + settings['region'] + '.op.gg/summoner/userName=' + parsedsummoner
+
+    embedIMG = str(sorted(Path('.').rglob('profileicon'))[0].resolve()) + '/' + str(summoner['profileIconId']) + '.png'
+    file = discord.File(embedIMG, filename='icon.png')
+
+    embed = discord.Embed(title='OP.GG Link', url=embedURL, description=summoner['name'], color=0xddc679)
+    embed.set_thumbnail(url='attachment://icon.png')
+    embed.add_field(name='Level', value=summoner['summonerLevel'], inline=True)
+
+    await ctx.send(file=file, embed=embed)
 
 #If the debug flag is enabled log messages to console to ensure the bot is connected properly
 @bot.event
