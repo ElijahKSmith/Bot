@@ -52,10 +52,11 @@ except:
     exit(1)
 
 if rg_ver > local_ver:
-    print(f"New Data Dragon files are available, download at https://ddragon.leagueoflegends.com/cdn/dragontail-{rg_ver}.tgz (local version: {local_ver})")
+    print(f"ERROR: New Data Dragon files are available, download at https://ddragon.leagueoflegends.com/cdn/dragontail-{rg_ver}.tgz (local version: {local_ver})")
     exit(2)
 elif local_ver > rg_ver:
-    print(f"You must have used Chronobreak because your local Data Dragon files are newer than Riot's! (Riot: {rg_ver}, local: {local_ver})")
+    print(f"ERROR: You must have used Chronobreak because your local Data Dragon files are newer than Riot's! (Riot: {rg_ver}, local: {local_ver})")
+    exit(2)
 
 """
 Set up logging
