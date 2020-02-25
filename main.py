@@ -2,8 +2,8 @@ import discord
 import logging
 import json
 import requests
-import sys
 
+from sys import exit
 from pathlib import Path
 from datetime import datetime
 from discord.ext import commands
@@ -34,6 +34,29 @@ Parse JSON
 with open('config.json') as cfg:
     settings = json.load(cfg)
 
+rgkey = settings['riot-api-key']
+
+#Get region from config and set host
+host = switch_platform(settings['region'])
+if host == '-1':
+    print("ERROR: Region in config is invald, must be one of the folowing: {'br', 'eun', 'euw', 'jp', 'kr', 'lan', 'las', 'na', 'oce', 'tr', 'ru'}")
+    exit(1)
+
+#Check current DDragon files against live Riot ones to see if there's an update
+rg_ver = requests.get("https://ddragon.leagueoflegends.com/api/versions.json").json()[0]
+
+try:
+    local_ver = json.loads(sorted(Path('.').rglob('manifest.json'))[0].read_text())['v']
+except:
+    print(f"ERROR: No Data Dragon files were detected, download them at https://ddragon.leagueoflegends.com/cdn/dragontail-{rg_ver}.tgz")
+    exit(1)
+
+if rg_ver > local_ver:
+    print(f"New Data Dragon files are available, download at https://ddragon.leagueoflegends.com/cdn/dragontail-{rg_ver}.tgz (local version: {local_ver})")
+    exit(2)
+elif local_ver > rg_ver:
+    print(f"You must have used Chronobreak because your local Data Dragon files are newer than Riot's! (Riot: {rg_ver}, local: {local_ver})")
+
 """
 Set up logging
 """
@@ -55,13 +78,6 @@ logger.addHandler(loghandler)
 """
 Start Bot
 """
-
-rgkey = settings['riot-api-key']
-
-host = switch_platform(settings['region'])
-if host == '-1':
-    print("Region in config is invald, must be one of the folowing: {'br', 'eun', 'euw', 'jp', 'kr', 'lan', 'las', 'na', 'oce', 'tr', 'ru'}")
-    sys.exit(1)
 
 bot = commands.Bot(command_prefix=settings['prefix'])
 
