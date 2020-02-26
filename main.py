@@ -125,7 +125,7 @@ async def summoner(ctx, *, args):
 @bot.event
 async def on_message(message):
     if debug == True:
-        print(f"{message.channel} - {message.author}/{message.author.name}: {message.content}")
+        print(f"{message.guild} - #{message.channel} - {message.author}({message.author.id}): {message.content}")
     await bot.process_commands(message)
 
 bot.run(settings['bot-token'])
