@@ -102,7 +102,6 @@ async def echo(ctx, *, args):
 @bot.command()
 async def summoner(ctx, *, args):
     #TODO: Sanitize user input
-    #TODO: Add case where invalid summoner name is passed
     parsedsummoner = requests.utils.quote(args)
 
     query = host + 'summoner/v4/summoners/by-name/' + parsedsummoner
@@ -110,16 +109,22 @@ async def summoner(ctx, *, args):
     response = requests.get(query, params=payload)
     summoner = response.json()
 
-    embedURL = 'https://' + settings['region'] + '.op.gg/summoner/userName=' + parsedsummoner
+    if response.status_code == 200:
+        embedURL = 'https://' + settings['region'] + '.op.gg/summoner/userName=' + parsedsummoner
+        embedIMG = str(sorted(Path('.').rglob('profileicon'))[0].resolve()) + '/' + str(summoner['profileIconId']) + '.png'
+        file = discord.File(embedIMG, filename='icon.png')
 
-    embedIMG = str(sorted(Path('.').rglob('profileicon'))[0].resolve()) + '/' + str(summoner['profileIconId']) + '.png'
-    file = discord.File(embedIMG, filename='icon.png')
+        embed = discord.Embed(title='OP.GG Link', url=embedURL, description=summoner['name'], color=0xddc679)
+        embed.set_thumbnail(url='attachment://icon.png')
+        embed.add_field(name='Level', value=summoner['summonerLevel'], inline=True)
 
-    embed = discord.Embed(title='OP.GG Link', url=embedURL, description=summoner['name'], color=0xddc679)
-    embed.set_thumbnail(url='attachment://icon.png')
-    embed.add_field(name='Level', value=summoner['summonerLevel'], inline=True)
+        await ctx.send(file=file, embed=embed)
 
-    await ctx.send(file=file, embed=embed)
+    elif response.status_code == 404:
+        await ctx.send(f"No information was found for the summoner \"{args}\" on the {settings['region'].upper()} server.")
+
+    else:
+        await ctx.send(f"ERROR {summoner['status']['status_code']}: {summoner['status']['message']}")
 
 #If the debug flag is enabled log messages to console to ensure the bot is connected properly
 @bot.event
