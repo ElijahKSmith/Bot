@@ -6,9 +6,9 @@ Bot is a Discord bot that makes use of the Riot Games API to provide information
 
 The bot is currently in alpha stages of development and therefore any builds not downloaded off of the release page will most likely contain buggy/broken code and unfinished or unimplemented features.
 
-If you have any questions about the bot or its development please join my Discord server!
+If you have any questions about the bot or its development please join my Discord server by clicking on the icon below!
 
-[![Discord](https://vignette.wikia.nocookie.net/cpremadeofficial/images/1/18/Discord_icon.png)](https://discord.gg/g6nr4yu)
+<a href="https://discord.gg/g6nr4yu" target="_blank"><img src="https://vignette.wikia.nocookie.net/siivagunner/images/9/9f/Discord_icon.svg" alt="Discord Invite" height="50"/></a>
 
 ### Disclaimer
 
