@@ -124,7 +124,10 @@ async def summoner(ctx, *, args):
         await ctx.send(f"No information was found for the summoner \"{args}\" on the {settings['region'].upper()} server.")
 
     else:
-        await ctx.send(f"ERROR {summoner['status']['status_code']}: {summoner['status']['message']}")
+        try:
+            await ctx.send(f"ERROR {summoner['status']['status_code']}: {summoner['status']['message']}")
+        except:
+            await ctx.send(f"ERROR {response.status_code}, no other information is available.")
 
 #If the debug flag is enabled log messages to console to ensure the bot is connected properly
 @bot.event
