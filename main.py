@@ -114,6 +114,8 @@ async def summoner(ctx, *, args):
         embedIMG = str(sorted(Path('.').rglob('profileicon'))[0].resolve()) + '/' + str(summoner['profileIconId']) + '.png'
         file = discord.File(embedIMG, filename='icon.png')
 
+        #TODO: Add champ mastery stats and ranking info
+
         embed = discord.Embed(title='OP.GG Link', url=embedURL, description=summoner['name'], color=0xddc679)
         embed.set_thumbnail(url='attachment://icon.png')
         embed.add_field(name='Level', value=summoner['summonerLevel'], inline=True)
