@@ -37,11 +37,24 @@ with open('config.json') as cfg:
 rgkey = settings['riot-api-key']
 
 #Get region from config and set host
-host = switch_platform(settings['region'])
+host = switch_platform(settings['region'].lower())
 if host == '-1':
-    print("ERROR: Region in config is invald, must be one of the folowing: {'br', 'eun', 'euw', 'jp', 'kr', 'lan', 'las', 'na', 'oce', 'tr', 'ru'}")
+    print("ERROR: Region in config is invald, must be one of the folowing: ['br', 'eun', 'euw', 'jp', 'kr', 'lan', 'las', 'na', 'oce', 'tr', 'ru']")
     exit(1)
 host = 'https://' + host + '.api.riotgames.com/lol/'
+
+#Get language from config and set path
+langs = set()
+data_folders = list(Path('.').rglob('data/*'))
+
+for i in range(0, len(data_folders)):
+    langs.add(data_folders[i].name)
+
+if settings['language'] in langs:
+    data_files = sorted(Path('.').rglob(settings['language']))[0].resolve()
+else:
+    print(f"ERROR: Language in config is invalid, must be one of the following: {sorted(langs)}")
+    exit(1)
 
 #Check current DDragon files against live Riot ones to see if there's an update
 rg_ver = requests.get("https://ddragon.leagueoflegends.com/api/versions.json").json()[0]
