@@ -43,19 +43,6 @@ if host == '-1':
     exit(1)
 host = 'https://' + host + '.api.riotgames.com/lol/'
 
-#Get language from config and set path
-langs = set()
-data_folders = list(Path('.').rglob('data/*'))
-
-for i in range(0, len(data_folders)):
-    langs.add(data_folders[i].name)
-
-if settings['language'] in langs:
-    data_files = sorted(Path('.').rglob(settings['language']))[0].resolve()
-else:
-    print(f"ERROR: Language in config is invalid, must be one of the following: {sorted(langs)}")
-    exit(1)
-
 #Check current DDragon files against live Riot ones to see if there's an update
 rg_ver = requests.get("https://ddragon.leagueoflegends.com/api/versions.json").json()[0]
 
@@ -71,6 +58,19 @@ if rg_ver > local_ver:
 elif local_ver > rg_ver:
     print(f"ERROR: You must have used Chronobreak because your local Data Dragon files are newer than Riot's! (Riot: {rg_ver}, local: {local_ver})")
     exit(2)
+
+#Get language from config and set path
+langs = set()
+data_folders = list(Path('.').rglob('data/*'))
+
+for i in range(0, len(data_folders)):
+    langs.add(data_folders[i].name)
+
+if settings['language'] in langs:
+    data_files = sorted(Path('.').rglob(settings['language']))[0]
+else:
+    print(f"ERROR: Language in config is invalid, must be one of the following: {sorted(langs)}")
+    exit(1)
 
 """
 Set up logging
