@@ -33,6 +33,7 @@ Parse JSON
 
 with open('config.json') as cfg:
     settings = json.load(cfg)
+    cfg.close()
 
 rgkey = settings['riot-api-key']
 
@@ -71,6 +72,16 @@ if settings['language'] in langs:
 else:
     print(f"ERROR: Language in config is invalid, must be one of the following: {sorted(langs)}")
     exit(1)
+
+#Get champion ID and Name from current language for later reference
+champs_file = data_files/'champion.json'
+champs_file_contents = json.loads(champs_file.read_text())
+champs = {}
+
+for (k, info) in champs_file_contents['data'].items():
+    champs[info['key']] = info['name']
+
+del champs_file_contents
 
 """
 Set up logging
@@ -128,6 +139,12 @@ async def summoner(ctx, *, args):
         file = discord.File(embedIMG, filename='icon.png')
 
         #TODO: Add champ mastery stats and ranking info
+        mquery = host + 'champion-mastery/v4/champion-masteries/by-summoner/' + summoner['id']
+        mresponse = requests.get(mquery, params=payload)
+        mastery = mresponse.json()
+
+        if len(mastery) > 0:
+            print("yay!")
 
         embed = discord.Embed(title=summoner['name'], url=embedURL, color=0xddc679)
         embed.set_thumbnail(url='attachment://icon.png')
