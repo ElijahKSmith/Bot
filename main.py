@@ -142,9 +142,23 @@ async def summoner(ctx, *, args):
         embed.set_thumbnail(url='attachment://icon.png')
 
         #Summoner level
-        embed.add_field(name='Level', value=summoner['summonerLevel'], inline=True)
+        embed.add_field(name='Level', value=summoner['summonerLevel'], inline=False)
 
-        #TODO: Add ranking info
+        #Ranking information
+        rquery = host + 'league/v4/entries/by-summoner/' + summoner['id']
+        rresponse = requests.get(rquery, params=payload)
+        ranks = rresponse.json()
+
+        if len(ranks) > 0:
+            rank = ''
+
+            for i in range(0, len(ranks)):
+                queue = ranks[i]['queueType'].split('_')
+                rank = rank + queue[1] + ' - ' + ranks[i]['tier'] + ' ' + ranks[i]['rank'] + ' (' + str(ranks[i]['leaguePoints']) + ' LP)\n'
+
+            embed.add_field(name='Rank', value=rank, inline=False)
+        else:
+            embed.add_field(name='Rank', value='Unranked', inline=False)
 
         #Champion mastery
         mquery = host + 'champion-mastery/v4/champion-masteries/by-summoner/' + summoner['id']
