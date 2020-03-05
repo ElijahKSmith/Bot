@@ -138,17 +138,26 @@ async def summoner(ctx, *, args):
         embedIMG = str(sorted(Path('.').rglob('profileicon'))[0].resolve()) + '/' + str(summoner['profileIconId']) + '.png'
         file = discord.File(embedIMG, filename='icon.png')
 
-        #TODO: Add champ mastery stats and ranking info
-        mquery = host + 'champion-mastery/v4/champion-masteries/by-summoner/' + summoner['id']
-        mresponse = requests.get(mquery, params=payload)
-        mastery = mresponse.json()
-
-        if len(mastery) > 0:
-            print("yay!")
-
         embed = discord.Embed(title=summoner['name'], url=embedURL, color=0xddc679)
         embed.set_thumbnail(url='attachment://icon.png')
+
+        #Summoner level
         embed.add_field(name='Level', value=summoner['summonerLevel'], inline=True)
+
+        #TODO: Add ranking info
+
+        #Champion mastery
+        mquery = host + 'champion-mastery/v4/champion-masteries/by-summoner/' + summoner['id']
+        mresponse = requests.get(mquery, params=payload)
+        masteries = mresponse.json()
+
+        if len(masteries) > 0:
+            mastery = ''
+
+            for i in range(0, min(len(masteries), 3)):
+                mastery = mastery + champs.get(str(masteries[i]['championId']), '') + ' - ' + "{:,}".format(masteries[i]['championPoints']) + ' points\n'
+
+            embed.add_field(name='Top 3 Champions', value=mastery, inline=False)
 
         await ctx.send(file=file, embed=embed)
 
