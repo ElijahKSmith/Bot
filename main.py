@@ -134,7 +134,7 @@ async def summoner(ctx, *, args):
     summoner = response.json()
 
     if response.status_code == 200:
-        embedURL = 'https://' + settings['region'] + '.op.gg/summoner/userName=' + parsedsummoner
+        embedURL = 'https://' + settings['region'].lower() + '.op.gg/summoner/userName=' + parsedsummoner
         embedIMG = str(sorted(Path('.').rglob('profileicon'))[0].resolve()) + '/' + str(summoner['profileIconId']) + '.png'
         file = discord.File(embedIMG, filename='icon.png')
 
