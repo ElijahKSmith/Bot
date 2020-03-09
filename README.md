@@ -1,10 +1,14 @@
-# Bot
-
-## A **currently** Unnamed Discord Bot
+# Bot - A **currently** unnamed Discord bot
 
 Bot is a Discord bot that makes use of the Riot Games API to provide information about League of Legends in your Discord server!
 
 The bot is currently in alpha stages of development and therefore any builds not downloaded off of the release page will most likely contain buggy/broken code and unfinished or unimplemented features.
+
+### Getting Started
+
+Download a build off of the releases page or by cloning the repository and [follow the instructions on the project wiki](https://github.com/ElijahKSmith/Bot/wiki/Getting-Started) to get started!
+
+### Feedback
 
 If you have any questions about the bot or its development please join my Discord server by clicking on the icon below!
 
