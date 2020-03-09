@@ -184,6 +184,12 @@ async def summoner(ctx, *, args):
         except:
             await ctx.send(f"ERROR {response.status_code}, no other information is available.")
 
+#Retrieve ranked match history
+#TODO: Unranked match history too?
+@bot.command()
+async def history(ctx, *, args):
+    await ctx.send("Not yet implemented.")
+
 #If the debug flag is enabled log messages to console to ensure the bot is connected properly
 @bot.event
 async def on_message(message):
