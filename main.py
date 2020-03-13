@@ -61,6 +61,7 @@ elif local_ver > rg_ver:
     exit(2)
 
 #Get language from config and set path
+#TODO: I just found the languages.json file! Replace this hacked together method with that; currently id_ID not available so add check for that
 langs = set()
 data_folders = list(Path('.').rglob('data/*'))
 
@@ -188,7 +189,23 @@ async def summoner(ctx, *, args):
 #TODO: Unranked match history too?
 @bot.command()
 async def history(ctx, *, args):
-    await ctx.send("Not yet implemented.")
+    parsedsummoner = requests.utils.quote(args)
+
+    query = host + 'summoner/v4/summoners/by-name/' + parsedsummoner
+    payload = {'api_key': rgkey}
+    response = requests.get(query, params=payload)
+    summoner = response.json()
+
+    if response.status_code == 200:
+        await ctx.send("Not yet implemented.")
+    elif response.status_code == 404:
+        await ctx.send(f"No information was found for the summoner \"{args}\" on the {settings['region'].upper()} server.")
+
+    else:
+        try:
+            await ctx.send(f"ERROR {summoner['status']['status_code']}: {summoner['status']['message']}")
+        except:
+            await ctx.send(f"ERROR {response.status_code}, no other information is available.")
 
 #If the debug flag is enabled log messages to console to ensure the bot is connected properly
 @bot.event
