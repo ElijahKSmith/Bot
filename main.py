@@ -45,6 +45,7 @@ if host == '-1':
 host = 'https://' + host + '.api.riotgames.com/lol/'
 
 #Check current DDragon files against live Riot ones to see if there's an update
+#TODO: Look into replacing this call with one to the realms cdn file instead
 rg_ver = requests.get("https://ddragon.leagueoflegends.com/api/versions.json").json()[0]
 
 try:
@@ -74,13 +75,15 @@ else:
     print(f"ERROR: Language in config is invalid, must be one of the following: {sorted(langs)}")
     exit(1)
 
-#Get champion ID and Name from current language for later reference
+#Get champion keys, names, and ids from current language for later reference
 champs_file = data_files/'champion.json'
 champs_file_contents = json.loads(champs_file.read_text())
 champs = {}
+champids ={}
 
 for (k, info) in champs_file_contents['data'].items():
-    champs[info['key']] = info['name']
+    champs[int(info['key'])] = info['name']
+    champids[int(info['key'])] = info['id']
 
 del champs_file_contents
 
@@ -170,7 +173,7 @@ async def summoner(ctx, *, args):
             mastery = ''
 
             for i in range(0, min(len(masteries), 3)):
-                mastery = mastery + champs.get(str(masteries[i]['championId']), '') + ' - ' + "{:,}".format(masteries[i]['championPoints']) + ' points\n'
+                mastery = mastery + champs.get(masteries[i]['championId'], '') + ' - ' + "{:,}".format(masteries[i]['championPoints']) + ' points\n'
 
             embed.add_field(name='Top 3 Champions', value=mastery, inline=False)
 
@@ -206,6 +209,30 @@ async def history(ctx, *, args):
             await ctx.send(f"ERROR {summoner['status']['status_code']}: {summoner['status']['message']}")
         except:
             await ctx.send(f"ERROR {response.status_code}, no other information is available.")
+
+#Displays information about a champion using localized Data Dragon information
+@bot.command()
+async def champion(ctx, *, args):
+    found = False
+
+    #TODO: These ifs everywhere are ugly and inefficient, get rid of them
+
+    for (k, champ) in champs.items():
+        if found:
+            break
+        if champ == args:
+            found = True
+            await ctx.send(f"I found \"{args}\" in champs.")
+    
+    for (k, champ) in champids.items():
+        if found:
+            break
+        if champ == args:
+            found = True
+            await ctx.send(f"I found \"{args}\" in champids.")
+            
+    if not found:
+        await ctx.send(f"I couldn't find any information on the champion \"{args}\", did you type it in correctly?")
 
 #If the debug flag is enabled log messages to console to ensure the bot is connected properly
 @bot.event
