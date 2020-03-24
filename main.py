@@ -83,7 +83,7 @@ champids ={}
 
 for (k, info) in champs_file_contents['data'].items():
     champs[int(info['key'])] = info['name']
-    champids[int(info['key'])] = info['id']
+    champids[info['name']] = info['id']
 
 del champs_file_contents
 
@@ -130,15 +130,15 @@ async def echo(ctx, *, args):
 @bot.command()
 async def summoner(ctx, *, args):
     #TODO: Sanitize user input
-    parsedsummoner = requests.utils.quote(args)
+    parsed_summoner = requests.utils.quote(args)
 
-    query = host + 'summoner/v4/summoners/by-name/' + parsedsummoner
+    query = host + 'summoner/v4/summoners/by-name/' + parsed_summoner
     payload = {'api_key': rgkey}
     response = requests.get(query, params=payload)
     summoner = response.json()
 
     if response.status_code == 200:
-        embedURL = 'https://' + settings['region'].lower() + '.op.gg/summoner/userName=' + parsedsummoner
+        embedURL = 'https://' + settings['region'].lower() + '.op.gg/summoner/userName=' + parsed_summoner
         embedIMG = str(sorted(Path('.').rglob('profileicon'))[0].resolve()) + '/' + str(summoner['profileIconId']) + '.png'
         file = discord.File(embedIMG, filename='icon.png')
 
@@ -192,9 +192,9 @@ async def summoner(ctx, *, args):
 #TODO: Unranked match history too?
 @bot.command()
 async def history(ctx, *, args):
-    parsedsummoner = requests.utils.quote(args)
+    parsed_summoner = requests.utils.quote(args)
 
-    query = host + 'summoner/v4/summoners/by-name/' + parsedsummoner
+    query = host + 'summoner/v4/summoners/by-name/' + parsed_summoner
     payload = {'api_key': rgkey}
     response = requests.get(query, params=payload)
     summoner = response.json()
@@ -214,24 +214,21 @@ async def history(ctx, *, args):
 @bot.command()
 async def champion(ctx, *, args):
     found = False
-
-    #TODO: These ifs everywhere are ugly and inefficient, get rid of them
-
-    for (k, champ) in champs.items():
-        if found:
-            break
-        if champ == args:
-            found = True
-            await ctx.send(f"I found \"{args}\" in champs.")
     
-    for (k, champ) in champids.items():
-        if found:
-            break
-        if champ == args:
+    for (name, champid) in champids.items():
+        if name == args:
             found = True
-            await ctx.send(f"I found \"{args}\" in champids.")
-            
-    if not found:
+            champ = champid
+            break
+        elif champid == args:
+            found = True
+            champ = champid
+            break
+
+    if found:
+        champ_file = data_files/'champion'/(champ+'.json')
+        champ_file_contents = json.loads(champ_file.read_text())
+    else:
         await ctx.send(f"I couldn't find any information on the champion \"{args}\", did you type it in correctly?")
 
 #If the debug flag is enabled log messages to console to ensure the bot is connected properly
