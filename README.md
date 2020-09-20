@@ -10,9 +10,7 @@ Download a build off of the releases page or by cloning the repository and [foll
 
 ### Feedback
 
-If you have any questions about the bot or its development please join my Discord server by clicking on the icon below!
-
-<a href="https://discord.gg/g6nr4yu" target="_blank"><img src="https://vignette.wikia.nocookie.net/siivagunner/images/9/9f/Discord_icon.svg" alt="Discord Invite" height="50"/></a>
+If you have any questions about the bot or its development, contact eksmith#8784 on Discord or @ElijahKSmith on Twitter.
 
 ### Disclaimer
 
