@@ -1,3 +1,5 @@
+This project is no longer in development. If you wish to continue the devleopment on your own, please fork the repository and adhere to the license restrictions.
+
 # Bot - A **currently** unnamed Discord bot
 
 Bot is a Discord bot that makes use of the Riot Games API to provide information about League of Legends in your Discord server!
